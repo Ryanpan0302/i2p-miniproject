@@ -20,14 +20,14 @@ using namespace std;
 #define l 3
 
 const int valuetable1[8][8]={
-    100,-15, 20, 10, 10, 20,-15,100,
-    -15,-30,-10, -5, -5,-10,-30,-15,
-     20,-10, 10,  5,  5, 10,-10, 20,
-     10, -5,  5,  0,  0,  5, -5, 10,
-     10, -5,  5,  0,  0,  5, -5, 10,
-     20,-10, 10,  5,  5, 10,-10, 20,
-    -15,-30,-10, -5, -5,-10,-30,-15,
-    100,-15, 20, 10, 10, 20,-15,100 };
+     99, -8,  8,  6,  6,  8, -8, 99,
+     -8,-24, -4, -3, -3, -4,-24, -8,
+      8, -4,  7,  4,  4,  7, -4,  8,
+      6, -3,  4,  0,  0,  4, -3,  6,
+      6, -3,  4,  0,  0,  4, -3,  6,
+      8, -4,  7,  4,  4,  7, -4,  8,
+     -8,-24, -4, -3, -3, -4,-24, -8,
+     99, -8,  8,  6,  6,  8, -8, 99 };
 
 const int valuetable3[8][8]={
     c,m,e,e,e,e,m,c,
@@ -279,8 +279,8 @@ public:
             for(int i=0;i<SIZE;i++){
                 for(int j=0;j<SIZE;j++){
                     if(disc_count[EMPTY]>=52){
-                        if(oboard[i][j]==BLACK)heur+=valuetable3[i][j];
-                        else if(oboard[i][j]==WHITE)heur-=valuetable3[i][j];
+                        if(oboard[i][j]==BLACK)heur+=valuetable1[i][j];
+                        else if(oboard[i][j]==WHITE)heur-=valuetable1[i][j];
                     }else if(disc_count[EMPTY]>=8){
                         if(oboard[i][j]==BLACK)heur+=valuetable1[i][j];
                         else if(oboard[i][j]==WHITE)heur-=valuetable1[i][j];
@@ -297,8 +297,8 @@ public:
             for(int i=0;i<SIZE;i++){
                 for(int j=0;j<SIZE;j++){
                     if(disc_count[EMPTY]>=52){
-                        if(oboard[i][j]==WHITE)heur+=valuetable3[i][j];
-                        else if(oboard[i][j]==BLACK)heur-=valuetable3[i][j];
+                        if(oboard[i][j]==WHITE)heur+=valuetable1[i][j];
+                        else if(oboard[i][j]==BLACK)heur-=valuetable1[i][j];
                     }else if(disc_count[EMPTY]>=8){
                         if(oboard[i][j]==WHITE)heur+=valuetable1[i][j];
                         else if(oboard[i][j]==BLACK)heur-=valuetable1[i][j];
