@@ -18,6 +18,18 @@ using namespace std;
 #define h 3
 #define k 4
 #define l 3
+/**/
+const int valuetable[8][8]={
+     80,-26, 24, -1, -5, 28,-18, 76,
+    -23,-39,-18, -9, -6, -8,-39, -1,
+     46,-16,  4,  1, -3,  6,-20, 52,
+    -13, -5,  2, -1,  4,  3,-12, -2,
+     -5, -6,  1, -2, -3,  0, -9, -5,
+     48,-13, 12,  5,  0,  5,-24, 41,
+    -27,-53,-11, -1,-11,-16,-58,-15,
+     87,-25, 27, -1,  5, 36, -3,100
+};
+
 
 const int valuetable1[8][8]={
     100,  0, 10, 20, 20, 10,  0,100,
@@ -30,14 +42,14 @@ const int valuetable1[8][8]={
     100,  0, 10, 20, 20, 10,  0,100 };
 
 const int valuetable4[8][8]={
-    100,-15, 10, 10, 10, 10,-15,100,
-    -15,-30, -5, -5, -5,  0,-30,-15,
-     10,  0, 10,  5,  5, 10,  0, 10,
-     10, -5,  5,  5,  5,  5, -5, 10,
-     10, -5,  5,  5,  5,  5, -5, 10,
-     10,  0, 10,  5,  5, 10,  0, 10,
-    -15,-30,  0, -5, -5,  0,-30,-15,
-    100,-15, 10, 10, 10, 10,-15,100 };
+    100,-25, 10,  5,  5, 10,-25,100,
+    -25,-25,  2,  2,  2,  2,-25,-25,
+     10,  2,  5,  1,  1,  5,  2, 10,
+      5,  2,  1,  2,  2,  1,  2,  5,
+      5,  2,  1,  2,  2,  1,  2,  5,
+     10,  2,  5,  1,  1,  5,  2, 10,
+    -25,-25,  2,  2,  2,  2,-25,-25,
+    100,-25, 10,  5,  5, 10,-25,100 };
 
 const int valuetable3[8][8]={
     c,m,e,e,e,e,m,c,
@@ -90,7 +102,6 @@ const std::array<Point, 8> directions{{
 }};
 
 int player;
-int white=0,black=0,blank=0;//
 const int SIZE = 8;
 std::array<std::array<int, SIZE>, SIZE> board;
 std::vector<Point> next_valid_spots;
@@ -163,7 +174,7 @@ private:
         }
     }
 public:
-    OthelloBoard(){}
+    OthelloBoard(){reset();}
     OthelloBoard(std::array<std::array<int, SIZE>, SIZE> newboard){//copy constructor
         disc_count[EMPTY] = 0;
         disc_count[BLACK] = 0;
@@ -182,6 +193,7 @@ public:
         }
     }
     OthelloBoard(const OthelloBoard& origin){//copy constructor
+        //*this=origin;
         this->cur_player=origin.cur_player;
         this->disc_count=origin.disc_count;
         this->done=origin.done;
@@ -262,15 +274,35 @@ public:
         if(player==1){
             for(int i=0;i<SIZE;i++){
                 for(int j=0;j<SIZE;j++){
+                    if(oboard[i][j]==BLACK)heur+=valuetable[i][j];
+                    else if(oboard[i][j]==WHITE)heur-=valuetable[i][j];
+                }
+            }
+            //heur+=(disc_count[BLACK]-disc_count[WHITE])*7;
+            //return disc_count[BLACK]-disc_count[WHITE];
+        }
+        else{
+            for(int i=0;i<SIZE;i++){
+                for(int j=0;j<SIZE;j++){
+                    if(oboard[i][j]==WHITE)heur+=valuetable[i][j];
+                    else if(oboard[i][j]==BLACK)heur-=valuetable[i][j];
+                }
+            }
+            //heur+=(disc_count[WHITE]-disc_count[BLACK])*7;
+            //return disc_count[WHITE]-disc_count[BLACK];
+        }
+        /*if(player==1){
+            for(int i=0;i<SIZE;i++){
+                for(int j=0;j<SIZE;j++){
                     if(disc_count[EMPTY]>=56){
-                        if(oboard[i][j]==BLACK)heur+=valuetable3[i][j];
-                        else if(oboard[i][j]==WHITE)heur-=valuetable3[i][j];
+                        if(oboard[i][j]==BLACK)heur+=valuetable4[i][j];
+                        else if(oboard[i][j]==WHITE)heur-=valuetable4[i][j];
                     }else if(disc_count[EMPTY]>=24){
-                        if(oboard[i][j]==BLACK)heur+=valuetable1[i][j];
-                        else if(oboard[i][j]==WHITE)heur-=valuetable1[i][j];
+                        if(oboard[i][j]==BLACK)heur+=valuetable4[i][j];
+                        else if(oboard[i][j]==WHITE)heur-=valuetable4[i][j];
                     }else if(disc_count[EMPTY]>=8){
-                        if(oboard[i][j]==BLACK)heur+=valuetable1[i][j];
-                        else if(oboard[i][j]==WHITE)heur-=valuetable1[i][j];
+                        if(oboard[i][j]==BLACK)heur+=valuetable4[i][j];
+                        else if(oboard[i][j]==WHITE)heur-=valuetable4[i][j];
                     }else{
                         if(oboard[i][j]==BLACK)heur+=6;
                         else if(oboard[i][j]==WHITE)heur-=6;
@@ -284,14 +316,14 @@ public:
             for(int i=0;i<SIZE;i++){
                 for(int j=0;j<SIZE;j++){
                     if(disc_count[EMPTY]>=56){
-                        if(oboard[i][j]==WHITE)heur+=valuetable3[i][j];
-                        else if(oboard[i][j]==BLACK)heur-=valuetable3[i][j];
+                        if(oboard[i][j]==WHITE)heur+=valuetable4[i][j];
+                        else if(oboard[i][j]==BLACK)heur-=valuetable4[i][j];
                     }else if(disc_count[EMPTY]>=24){
-                        if(oboard[i][j]==WHITE)heur+=valuetable1[i][j];
-                        else if(oboard[i][j]==BLACK)heur-=valuetable1[i][j];
+                        if(oboard[i][j]==WHITE)heur+=valuetable4[i][j];
+                        else if(oboard[i][j]==BLACK)heur-=valuetable4[i][j];
                     }else if(disc_count[EMPTY]>=8){
-                        if(oboard[i][j]==WHITE)heur+=valuetable1[i][j];
-                        else if(oboard[i][j]==BLACK)heur-=valuetable1[i][j];
+                        if(oboard[i][j]==WHITE)heur+=valuetable4[i][j];
+                        else if(oboard[i][j]==BLACK)heur-=valuetable4[i][j];
                     }else{
                         if(oboard[i][j]==WHITE)heur+=6;
                         else if(oboard[i][j]==BLACK)heur-=6;
@@ -300,7 +332,7 @@ public:
             }
             //heur+=(disc_count[WHITE]-disc_count[BLACK])*7;
             //return disc_count[WHITE]-disc_count[BLACK];
-        } 
+        } */
         return heur;
     }
 };
@@ -336,13 +368,13 @@ void read_board(std::ifstream& fin) {//讀近來直接建一個新的board
             β := min(β, value)
         return value*/
 int alphabeta(OthelloBoard otboard,int depth,int alpha,int beta,bool maxplayer){
-    //otboard.cur_player=(maxplayer?1:2);//確認遺下
-    if(depth==0 || (otboard.nxt_valid_spots).size()==0){
+    otboard.cur_player=(maxplayer?player:3-player);//確認遺下
+    if(depth==0 || (otboard.nxt_valid_spots).empty()){
         return otboard.valuefunc();
     }
     if(maxplayer){
         int value=-INT_MAX;
-        vector<Point> children=otboard.nxt_valid_spots;
+        vector<Point> children=otboard.get_valid_spots();
         int n_children=children.size();
         for(int i=0;i<n_children;i++){
             OthelloBoard child(otboard);//make new board
@@ -355,7 +387,7 @@ int alphabeta(OthelloBoard otboard,int depth,int alpha,int beta,bool maxplayer){
         return value;
     }else{
         int value=INT_MAX;
-        vector<Point> children=otboard.nxt_valid_spots;
+        vector<Point> children=otboard.get_valid_spots();
         int n_children=children.size();
         for(int i=0;i<n_children;i++){
             OthelloBoard child(otboard);//make new board
@@ -389,7 +421,7 @@ void write_valid_spot(std::ofstream& fout) {
         OthelloBoard child(otboard);//make new board
         child.put_disc(next_valid_spots[i]);//add disc
         fout << next_valid_spots[i].x << " " << next_valid_spots[i].y << std::endl;
-        if(alphabeta(child,8, -INT_MAX, INT_MAX, true)>=heuristic){//let depth=10
+        if(alphabeta(child,16, -INT_MAX, INT_MAX, true)>=heuristic){//let depth=10
             index=i;
         }   
     }
