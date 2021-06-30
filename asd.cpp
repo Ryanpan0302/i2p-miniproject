@@ -240,11 +240,11 @@ public:
         return valid_spots;
     }
     bool put_disc(Point p) {
-        /*if(!is_spot_valid(p)) {
+        if(!is_spot_valid(p)) {
             winner = get_next_player(cur_player);
             done = true;
             return false;
-        }*/
+        }
         set_disc(p, this->cur_player);
         disc_count[this->cur_player]++;
         disc_count[EMPTY]--;
@@ -253,7 +253,7 @@ public:
         this->cur_player = get_next_player(this->cur_player);
         this->nxt_valid_spots = get_valid_spots();
         // Check Win
-        /*if (next_valid_spots.size() == 0) {
+        if (next_valid_spots.size() == 0) {
             cur_player = get_next_player(cur_player);
             next_valid_spots = get_valid_spots();
             if (next_valid_spots.size() == 0) {
@@ -265,7 +265,7 @@ public:
                 else if (black_discs > white_discs) winner = BLACK;
                 else winner = WHITE;
             }
-        }*/
+        }
         return true;
     }
     
@@ -300,7 +300,7 @@ public:
                     }else if(disc_count[EMPTY]>=24){
                         if(oboard[i][j]==BLACK)heur+=valuetable4[i][j];
                         else if(oboard[i][j]==WHITE)heur-=valuetable4[i][j];
-                    }else if(disc_count[EMPTY]>=8){
+                    }else if(disc_count[EMPTY]>=6){
                         if(oboard[i][j]==BLACK)heur+=valuetable4[i][j];
                         else if(oboard[i][j]==WHITE)heur-=valuetable4[i][j];
                     }else{
@@ -321,7 +321,7 @@ public:
                     }else if(disc_count[EMPTY]>=24){
                         if(oboard[i][j]==WHITE)heur+=valuetable4[i][j];
                         else if(oboard[i][j]==BLACK)heur-=valuetable4[i][j];
-                    }else if(disc_count[EMPTY]>=8){
+                    }else if(disc_count[EMPTY]>=6){
                         if(oboard[i][j]==WHITE)heur+=valuetable4[i][j];
                         else if(oboard[i][j]==BLACK)heur-=valuetable4[i][j];
                     }else{
@@ -381,8 +381,9 @@ int alphabeta(OthelloBoard otboard,int depth,int alpha,int beta,bool maxplayer){
             child.put_disc(children[i]);//add disc
             //child.cur_player=3-board.cur_player;//child的player不一樣 //put_disc就換了
             value=max(value, alphabeta(child, depth-1, alpha, beta, false));
+            
+            if(value>=beta) break;
             alpha=max(value,alpha);
-            if(alpha>=beta) break;
         }
         return value;
     }else{
@@ -394,8 +395,9 @@ int alphabeta(OthelloBoard otboard,int depth,int alpha,int beta,bool maxplayer){
             child.put_disc(children[i]);//add disc
             //child.cur_player=3-board.cur_player;//child的player不一樣
             value=min(value, alphabeta(child, depth-1, alpha, beta, true));
+            
+            if(value<=alpha) break;
             beta=min(value,beta);
-            if(beta<=alpha) break;
         }
         return value;
     }
@@ -421,7 +423,7 @@ void write_valid_spot(std::ofstream& fout) {
         OthelloBoard child(otboard);//make new board
         child.put_disc(next_valid_spots[i]);//add disc
         fout << next_valid_spots[i].x << " " << next_valid_spots[i].y << std::endl;
-        if(alphabeta(child,16, -INT_MAX, INT_MAX, true)>=heuristic){//let depth=10
+        if(alphabeta(child,8, -INT_MAX, INT_MAX, true)>=heuristic){//let depth=10
             index=i;
         }   
     }
